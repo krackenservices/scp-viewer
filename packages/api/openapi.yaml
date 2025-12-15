@@ -1,0 +1,257 @@
+openapi: 3.0.3
+info:
+  title: SCP Viewer API
+  description: API for querying SCP architecture graphs
+  version: 0.1.0
+
+servers:
+  - url: http://localhost:4000
+    description: Development server
+
+paths:
+  /api/systems:
+    get:
+      summary: List all systems
+      operationId: listSystems
+      parameters:
+        - name: tier
+          in: query
+          schema:
+            type: integer
+        - name: domain
+          in: query
+          schema:
+            type: string
+        - name: team
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of systems
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/System'
+
+  /api/systems/{urn}:
+    get:
+      summary: Get system by URN
+      operationId: getSystem
+      parameters:
+        - name: urn
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: System details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemDetails'
+        '404':
+          description: System not found
+
+  /api/systems/{urn}/dependencies:
+    get:
+      summary: Get system dependencies
+      operationId: getSystemDependencies
+      parameters:
+        - name: urn
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of dependencies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dependency'
+
+  /api/systems/{urn}/dependents:
+    get:
+      summary: Get systems that depend on this
+      operationId: getSystemDependents
+      parameters:
+        - name: urn
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of dependents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/System'
+
+  /api/systems/{urn}/blast-radius:
+    get:
+      summary: Get transitive blast radius
+      operationId: getBlastRadius
+      parameters:
+        - name: urn
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: depth
+          in: query
+          schema:
+            type: integer
+            default: 3
+      responses:
+        '200':
+          description: Blast radius graph
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Graph'
+
+  /api/graph:
+    get:
+      summary: Get full graph for visualization
+      operationId: getGraph
+      responses:
+        '200':
+          description: Full graph
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Graph'
+
+  /api/teams:
+    get:
+      summary: List all teams with system counts
+      operationId: listTeams
+      responses:
+        '200':
+          description: List of teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+
+  /api/scan:
+    post:
+      summary: Trigger a scan
+      operationId: triggerScan
+      responses:
+        '202':
+          description: Scan triggered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  scanId:
+                    type: string
+
+components:
+  schemas:
+    System:
+      type: object
+      properties:
+        urn:
+          type: string
+        name:
+          type: string
+        tier:
+          type: integer
+        domain:
+          type: string
+        team:
+          type: string
+
+    SystemDetails:
+      allOf:
+        - $ref: '#/components/schemas/System'
+        - type: object
+          properties:
+            description:
+              type: string
+            otelServiceName:
+              type: string
+            capabilities:
+              type: array
+              items:
+                type: string
+            dependencyCount:
+              type: integer
+            dependentCount:
+              type: integer
+
+    Dependency:
+      type: object
+      properties:
+        system:
+          $ref: '#/components/schemas/System'
+        type:
+          type: string
+        criticality:
+          type: string
+        failureMode:
+          type: string
+
+    Graph:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/GraphNode'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/GraphEdge'
+
+    GraphNode:
+      type: object
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        tier:
+          type: integer
+        domain:
+          type: string
+        team:
+          type: string
+
+    GraphEdge:
+      type: object
+      properties:
+        source:
+          type: string
+        target:
+          type: string
+        type:
+          type: string
+        criticality:
+          type: string
+
+    Team:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        systemCount:
+          type: integer

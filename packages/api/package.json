@@ -1,0 +1,18 @@
+{
+    "name": "@scp-viewer/api",
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "dev": "node --watch src/index.js",
+        "start": "node src/index.js",
+        "lint": "eslint src/"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "express-openapi-validator": "^5.1.0",
+        "neo4j-driver": "^5.17.0",
+        "swagger-ui-express": "^5.0.0",
+        "yamljs": "^0.3.0"
+    }
+}
