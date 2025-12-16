@@ -19,12 +19,12 @@ Interactive web dashboard for visualizing and exploring SCP architecture graphs.
 
 ```bash
 # Start all services
-docker-compose up -d
+make up
 
 # Run scanner to populate data
 mkdir -p data
 cp -r /path/to/repos/with/scp-yaml data/
-docker-compose --profile scan up scanner
+make scan
 ```
 
 **Viewer:** http://localhost:3000  
@@ -34,19 +34,19 @@ docker-compose --profile scan up scanner
 ## Development
 
 ```bash
+# Install dependencies
+make setup
+
 # Start just Neo4j
-docker-compose up -d neo4j
+docker compose up -d neo4j
 
-# Run API locally
-cd packages/api && npm install && npm run dev
-
-# Run Viewer locally
-cd packages/viewer && npm install && npm run dev
-
-# Run scanner locally
-cd packages/scanner && uv sync
-SCAN_PATH=/path/to/repos uv run scan
+# Run API and Viewer locally
+make dev
 ```
+
+## Makefile Commands
+
+Run `make help` to see all available commands.
 
 ## Packages
 
@@ -55,3 +55,4 @@ SCAN_PATH=/path/to/repos uv run scan
 | [viewer](./packages/viewer) | React + Cytoscape.js graph visualization |
 | [api](./packages/api) | Express + OpenAPI REST API |
 | [scanner](./packages/scanner) | Python scanner (uses scp-constructor) |
+
