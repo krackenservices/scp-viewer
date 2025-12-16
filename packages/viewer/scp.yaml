@@ -1,0 +1,43 @@
+scp: "0.1.0"
+
+system:
+  urn: "urn:scp:scp-viewer:viewer"
+  name: "SCP Viewer Frontend"
+  description: "React web dashboard for visualizing SCP architecture graphs"
+  version: "0.1.0"
+  classification:
+    tier: 2
+    domain: "developer-tools"
+    tags:
+      - "frontend"
+      - "visualization"
+      - "react"
+
+ownership:
+  team: "kracken-services"
+  contacts:
+    - type: "slack"
+      ref: "#scp-support"
+
+provides:
+  - capability: "graph-visualization"
+    type: "rest"
+    sla:
+      availability: "99.9%"
+
+depends:
+  - system: "urn:scp:scp-viewer:api"
+    type: "rest"
+    criticality: "required"
+    failure_mode: "fail-fast"
+
+runtime:
+  environments:
+    production:
+      otel_service_name: "scp-viewer-frontend"
+      endpoints:
+        - "http://localhost:3000"
+      kubernetes:
+        namespace: "scp"
+        deployment: "scp-viewer-frontend"
+        service: "scp-viewer-frontend"

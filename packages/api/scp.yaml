@@ -1,0 +1,54 @@
+scp: "0.1.0"
+
+system:
+  urn: "urn:scp:scp-viewer:api"
+  name: "SCP Viewer API"
+  description: "REST API for querying SCP architecture graphs stored in Neo4j"
+  version: "0.1.0"
+  classification:
+    tier: 2
+    domain: "developer-tools"
+    tags:
+      - "api"
+      - "graph"
+      - "neo4j"
+
+ownership:
+  team: "kracken-services"
+  contacts:
+    - type: "slack"
+      ref: "#scp-support"
+
+provides:
+  - capability: "systems-api"
+    type: "rest"
+    contract:
+      type: "openapi"
+      ref: "./openapi.yaml"
+    sla:
+      availability: "99.9%"
+      latency_p99_ms: 500
+
+  - capability: "graph-api"
+    type: "rest"
+    contract:
+      type: "openapi"
+      ref: "./openapi.yaml"
+
+depends:
+  - system: "urn:scp:neo4j:database"
+    type: "data"
+    criticality: "required"
+    failure_mode: "fail-fast"
+    access: "read-write"
+
+runtime:
+  environments:
+    production:
+      otel_service_name: "scp-viewer-api"
+      endpoints:
+        - "http://localhost:4000"
+      kubernetes:
+        namespace: "scp"
+        deployment: "scp-viewer-api"
+        service: "scp-viewer-api"

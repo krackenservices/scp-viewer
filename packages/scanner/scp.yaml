@@ -1,0 +1,41 @@
+scp: "0.1.0"
+
+system:
+  urn: "urn:scp:scp-viewer:scanner"
+  name: "SCP Scanner"
+  description: "Python scanner that discovers scp.yaml files and populates the Neo4j graph"
+  version: "0.1.0"
+  classification:
+    tier: 3
+    domain: "developer-tools"
+    tags:
+      - "scanner"
+      - "batch"
+      - "python"
+
+ownership:
+  team: "kracken-services"
+  contacts:
+    - type: "slack"
+      ref: "#scp-support"
+
+provides:
+  - capability: "scp-scanning"
+    type: "event"
+    topics:
+      - "graph-sync"
+
+depends:
+  - system: "urn:scp:neo4j:database"
+    type: "data"
+    criticality: "required"
+    failure_mode: "fail-fast"
+    access: "write"
+
+runtime:
+  environments:
+    production:
+      otel_service_name: "scp-viewer-scanner"
+      kubernetes:
+        namespace: "scp"
+        deployment: "scp-viewer-scanner"
