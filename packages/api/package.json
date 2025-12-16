@@ -17,6 +17,9 @@
         "yamljs": "^0.3.0"
     },
     "devDependencies": {
+        "@eslint/js": "^9.0.0",
+        "eslint": "^9.0.0",
+        "globals": "^16.0.0",
         "vitest": "^2.0.0",
         "supertest": "^6.3.0"
     }
