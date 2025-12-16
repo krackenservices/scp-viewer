@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "node --watch src/index.js",
         "start": "node src/index.js",
+        "test": "vitest",
         "lint": "eslint src/"
     },
     "dependencies": {
@@ -14,5 +15,9 @@
         "neo4j-driver": "^5.17.0",
         "swagger-ui-express": "^5.0.0",
         "yamljs": "^0.3.0"
+    },
+    "devDependencies": {
+        "vitest": "^2.0.0",
+        "supertest": "^6.3.0"
     }
 }

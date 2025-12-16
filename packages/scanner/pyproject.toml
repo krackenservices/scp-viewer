@@ -17,3 +17,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/scanner"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0",
+    "pytest-mock>=3.12.0",
+]
