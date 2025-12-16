@@ -58,5 +58,20 @@ Run `make help` to see all available commands.
 
 ## SCP Graph
 
-![SCP Graph](scp.mmd)
+```mermaid
+flowchart LR
+
+    %% Systems
+    api["🟡 SCP Viewer API"]
+    database["Database"]
+    scanner["SCP Scanner"]
+    viewer["🟡 SCP Viewer Frontend"]
+
+    %% Dependencies
+    api --> database
+    scanner --> database
+    viewer --> api
+
+    %% Styling
+```
 
