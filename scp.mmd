@@ -1,0 +1,14 @@
+flowchart LR
+
+    %% Systems
+    api["🟡 SCP Viewer API"]
+    database["Database"]
+    scanner["SCP Scanner"]
+    viewer["🟡 SCP Viewer Frontend"]
+
+    %% Dependencies
+    api --> database
+    scanner --> database
+    viewer --> api
+
+    %% Styling

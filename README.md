@@ -56,3 +56,7 @@ Run `make help` to see all available commands.
 | [api](./packages/api) | Express + OpenAPI REST API |
 | [scanner](./packages/scanner) | Python scanner (uses scp-constructor) |
 
+## SCP Graph
+
+![SCP Graph](scp.mmd)
+
