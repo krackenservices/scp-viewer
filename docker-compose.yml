@@ -60,6 +60,18 @@ services:
     profiles:
       - scan
 
+  mcp:
+    build: ./packages/mcp
+    environment:
+      - SCP_API_URL=http://api:4000
+    depends_on:
+      api:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+    profiles:
+      - mcp
+
   # E2E test runner using Playwright
   e2e:
     build:
