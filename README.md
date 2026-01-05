@@ -25,6 +25,8 @@ make up
 mkdir -p data
 cp -r /path/to/repos/with/scp-yaml data/
 make scan
+# or
+# V_DATA=<path_to_repos> make scan
 ```
 
 **Viewer:** http://localhost:3000  
