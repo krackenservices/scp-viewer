@@ -56,7 +56,6 @@ Run `make help` to see all available commands.
 |---------|-------------|
 | [viewer](./packages/viewer) | React + Cytoscape.js graph visualization |
 | [api](./packages/api) | Express + OpenAPI REST API |
-| [scanner](./packages/scanner) | Python scanner (uses scp-constructor) |
 
 ## SCP Graph
 

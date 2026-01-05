@@ -39,8 +39,6 @@ test-e2e: ## Run E2E tests (Playwright)
 test-e2e-ui: ## Run E2E tests with UI
 	npm run test:e2e:ui --workspace=@scp-viewer/viewer
 
-test-scanner: ## Run scanner tests
-	cd packages/scanner && uv run pytest
 
 test-docker: build-docker ## Run e2e tests in Docker
 	docker-compose --profile test up e2e && docker compose down
@@ -48,8 +46,6 @@ test-docker: build-docker ## Run e2e tests in Docker
 lint: ## Run linter on all packages
 	npm run lint
 
-lint-scanner: ## Lint scanner package (Python)
-	cd packages/scanner && uv run ruff check .
 
 up: ## Start all Docker services
 	docker compose up -d
@@ -65,11 +61,9 @@ build-docker: ## Build all Docker images
 rebuild-docker: ## Force rebuild Docker images (no cache)
 	docker compose build --no-cache
 
-scan: ## Run scanner to populate graph (uses ./data directory)
-	docker compose run --rm scanner
+scan: ## Run scanner to populate graph (uses ./data or V_DATA)
+	docker compose --profile scan up scanner
 
-scan-local: ## Run scanner locally
-	cd packages/scanner && uv run python -m scanner.main
 
 test-e2e-docker: ## Run E2E tests in Docker
 	docker compose --profile test up --abort-on-container-exit e2e
