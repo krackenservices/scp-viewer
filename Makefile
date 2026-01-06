@@ -33,6 +33,9 @@ test-api: ## Run API tests
 test-viewer: ## Run viewer unit tests
 	npm run test --workspace=@scp-viewer/viewer
 
+test-mcp: ## Run mcp unit tests
+	npm run test --workspace=@scp-viewer/mcp
+
 test-e2e: ## Run E2E tests (Playwright)
 	npm run test:e2e
 

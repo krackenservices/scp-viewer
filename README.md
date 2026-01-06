@@ -4,15 +4,23 @@ Interactive web dashboard for visualizing and exploring SCP architecture graphs.
 
 ## Architecture
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Viewer    │────▶│     API     │────▶│   Neo4j     │
-│   :3000     │     │   :4000     │     │   :7474     │
-└─────────────┘     └─────────────┘     └─────────────┘
-                                               ▲
-                                        ┌─────────────┐
-                                        │   Scanner   │
-                                        └─────────────┘
+```mermaid
+flowchart LR
+
+    %% Systems
+    api["SCP Viewer API"]
+    database["Database"]
+    scanner["SCP Scanner"]
+    viewer["SCP Viewer Frontend"]
+    mcp["MCP Server"]
+
+    %% Dependencies
+    api --> database
+    scanner --> database
+    viewer --> api
+    mcp --> api
+
+    %% Styling
 ```
 
 ## Quick Start (Docker)
@@ -56,23 +64,55 @@ Run `make help` to see all available commands.
 |---------|-------------|
 | [viewer](./packages/viewer) | React + Cytoscape.js graph visualization |
 | [api](./packages/api) | Express + OpenAPI REST API |
+| [mcp](./packages/mcp) | MCP server for LLM access to SCP data |
 
-## SCP Graph
+## MCP Server
 
-```mermaid
-flowchart LR
+The MCP server exposes SCP architecture data to LLMs via the [Model Context Protocol](https://modelcontextprotocol.io).
 
-    %% Systems
-    api["🟡 SCP Viewer API"]
-    database["Database"]
-    scanner["SCP Scanner"]
-    viewer["🟡 SCP Viewer Frontend"]
+### With Claude Desktop
 
-    %% Dependencies
-    api --> database
-    scanner --> database
-    viewer --> api
+Add to `~/.config/claude/claude_desktop_config.json`:
 
-    %% Styling
+```json
+{
+  "mcpServers": {
+    "scp": {
+      "command": "node",
+      "args": ["/path/to/scp-viewer/packages/mcp/src/index.js"],
+      "env": {
+        "SCP_API_URL": "http://localhost:4000"
+      }
+    }
+  }
+}
 ```
 
+### Standalone
+
+```bash
+# Ensure API is running
+make up
+
+# Run MCP server
+cd packages/mcp && SCP_API_URL=http://localhost:4000 npm start
+```
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `list_systems` | List systems with tier/domain/team filters |
+| `get_system` | Get system details by URN |
+| `get_dependencies` | What a system depends on |
+| `get_dependents` | What depends on a system |
+| `blast_radius` | Calculate blast radius graph |
+| `get_graph` | Get complete SCP graph |
+| `get_teams` | List teams and owned systems |
+
+### Available Resources
+
+| URI | Description |
+|-----|-------------|
+| `scp://graph/summary` | System/edge counts, domains, teams |
+| `scp://system/{urn}` | System details by URN |

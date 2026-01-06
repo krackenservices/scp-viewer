@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/krackenservices/scp-definition/main/spec/scp.schema.json
+scp: "0.1.0"
+
+system:
+  urn: "urn:scp:scp-viewer:mcp"
+  name: "SCP MCP Server"
+  description: "Model Context Protocol server for SCP architecture data"
+  classification:
+    tier: 2
+    domain: "platform"
+    tags: ["mcp", "llm", "ai"]
+
+ownership:
+  team: "platform-team"
+  contacts:
+    - type: "slack"
+      ref: "slack://channel/C123PLATFORM"
+
+provides:
+  - capability: "mcp-tools"
+    type: "stream"
+    contract:
+      type: "jsonschema"
+      ref: "https://spec.modelcontextprotocol.io"
+
+depends:
+  - system: "urn:scp:scp-viewer:api"
+    capability: "rest-api"
+    type: "rest"
+    criticality: "required"
+    failure_mode: "fail-fast"
