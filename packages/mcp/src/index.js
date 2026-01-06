@@ -51,7 +51,7 @@ const server = new McpServer({
 // Tool: list_systems
 server.tool(
     'list_systems',
-    'List all systems in the SCP graph. Can filter by tier, domain, or team.',
+    'Global search and discovery for the SCP registry. Use this to find system URNs when you only have a name or need to browse by domain/team. Returns a list of system summaries (URN, name, description, tier).',
     {
         tier: z.number().min(1).max(5).optional().describe('Filter by tier (1=critical, 5=experimental)'),
         domain: z.string().optional().describe('Filter by business domain'),
@@ -71,7 +71,7 @@ server.tool(
 // Tool: get_system
 server.tool(
     'get_system',
-    'Get detailed information about a specific system by its URN.',
+    'Retrieve the authoritative definition of a single system. Returns the full scp.yaml manifest including: ownership, classification, provided capabilities, runtime details (trace IDs), failure modes, and security constraints.',
     {
         urn: z.string().describe('System URN (e.g., urn:scp:my-service:api)'),
     },
@@ -89,7 +89,7 @@ server.tool(
 // Tool: get_dependencies
 server.tool(
     'get_dependencies',
-    'Get the systems that a specific system depends on (its dependencies).',
+    "Resolve upstream dependencies (the 'builds-on' graph). Returns a list of systems that the target directly relies on. Includes dependency metadata like criticality (required/optional) and coupling. Use for understanding composition or finding upstream root causes.",
     {
         urn: z.string().describe('System URN'),
     },
@@ -107,7 +107,7 @@ server.tool(
 // Tool: get_dependents
 server.tool(
     'get_dependents',
-    'Get the systems that depend on a specific system (what would break if this system fails).',
+    "Resolve downstream consumers (the 'supports' graph). Returns a list of systems that depend on the target. Use for impact analysis ('If I change X, who breaks?') or identifying stakeholders.",
     {
         urn: z.string().describe('System URN'),
     },
@@ -125,7 +125,7 @@ server.tool(
 // Tool: blast_radius
 server.tool(
     'blast_radius',
-    'Calculate the blast radius for a system - all systems that would be affected if this system fails, up to a specified depth.',
+    'Calculate the full cascading impact of a failure. Performs a recursive graph traversal to find all systems eventually affected if the target fails. Returns a subgraph of all affected nodes/edges.',
     {
         urn: z.string().describe('System URN'),
         depth: z.number().min(1).max(10).optional().describe('How many levels of dependencies to traverse (default: 3)'),
@@ -147,7 +147,7 @@ server.tool(
 // Tool: get_graph
 server.tool(
     'get_graph',
-    'Get the complete SCP graph with all systems, capabilities, and dependencies.',
+    'Dump the entire architecture graph state (all nodes and edges). WARNING: Output helps visualization but can be very large. Prefer targeted exploration with list_systems/get_system where possible.',
     {},
     wrapHandler(async () => {
         const graph = await api.getGraph()
@@ -163,7 +163,7 @@ server.tool(
 // Tool: get_teams
 server.tool(
     'get_teams',
-    'List all teams and their owned systems.',
+    'Directory of organizational ownership. Returns a list of all teams and the systems they own. Use to map architecture to org chart or bulk-find systems by team.',
     {},
     wrapHandler(async () => {
         const teams = await api.getTeams()
